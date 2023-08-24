@@ -28,6 +28,7 @@ export default class AuthModel {
   }
 
   static getProfile(name: string): Promise<UserProfile> {
+    console.log()
     return AuthModel.getUser(name).then(user => {
       if (!user) return null;
       else {
