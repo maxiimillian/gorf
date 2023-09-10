@@ -2,8 +2,9 @@ import express from 'express';
 import cors from 'cors';
 
 import authRouter from './routes/auth';
+import feedRouter from './routes/feeds';
 
-const routers = [authRouter];
+const routers = [authRouter, feedRouter];
 
 const app = express();
 
@@ -27,5 +28,6 @@ routers.map(router => {
 app.get('/', (req, res) => {
   res.status(200).json({ success: true });
 });
+
 
 export default app;

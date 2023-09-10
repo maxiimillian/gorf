@@ -9,11 +9,11 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "@/types/*": ["./src/types/*"],
+      "@/types/*": ["./src/@types/*"],
       "@/utils": ["./src/utils.ts"],
       "*": ["node_modules/*"]
     },
-    "typeRoots": ["environment.d.ts", "./node_modules/@types"]
+    "typeRoots": ["environment.d.ts", "./node_modules/@types", "./src/@types"]
   },
   "include": ["src/**/*"]
 }

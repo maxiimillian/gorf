@@ -15,6 +15,7 @@ export interface defaultRoute {
   handler?: handlerFunction;
   modelFunction?: modelFunction;
   middleware?: (...args: any) => any;
+  passRequestContext?: boolean
 }
 
 // Provides support for register default routes
@@ -44,6 +45,7 @@ export default class RouteHandler {
     message: string,
     middleware: middlewareFunction,
     handler: handlerFunction,
+    passRequestContext = false,
     args: any[] = [],
   ) {
     // Keeps track of method specific information
@@ -61,14 +63,14 @@ export default class RouteHandler {
     type = type.toLowerCase();
     const methodFunction = methodFunctionMap[type].methodFunction;
     const argSourceKey = methodFunctionMap[type].argSourceKey; // Depending on request, will need to extract from either params or body
-
+    console.log('registering: ', type, path, message)
     methodFunction.bind(this.router)(path, middleware, (req: any, res: any) => {
       const handlerArgs = args.map(
         arg => (typeof arg === 'function' && arg) || req[argSourceKey][arg],
       ); // Parse the arguments out of the request, including the model function
-
+        console.log(req['body'])
       const isMissingArguments = handlerArgs.some(arg => arg == undefined);
-
+      
       if (isMissingArguments) {
         const missingArguments = args.filter(arg => handlerArgs.indexOf(arg) === -1);
         this.sendResponse(
@@ -77,6 +79,8 @@ export default class RouteHandler {
         );
         return;
       }
+
+      if (passRequestContext) handlerArgs.unshift(req);
 
       handler(...handlerArgs)
         .then((handlerResponse: HandlerResponse) =>
@@ -106,6 +110,7 @@ export default class RouteHandler {
         route.message,
         route.middleware || blankMiddleware,
         route.handler || defaultHandler,
+        route.passRequestContext,
         args,
       );
     }
